@@ -6,7 +6,7 @@ import pathlib
 
 import torch
 
-import bayes_nn
+from bayes_nn.experiment import Trainer
 
 
 def main() -> None:
@@ -34,7 +34,7 @@ def main() -> None:
     dataset_train = None
     dataset_test = None
 
-    trainer = bayes_nn.Trainer(**params)
+    trainer = Trainer(**params)
     trainer.run(model, dataset_train, dataset_test)
 
 

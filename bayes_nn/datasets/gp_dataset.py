@@ -50,7 +50,7 @@ class GPSingleBatchDataset(Dataset):
         """
 
         x = torch.arange(x_lb, x_ub, (x_ub - x_lb) / self._seq_len)
-        _x_index = torch.sort(torch.randperm(self._seq_len)[:self._n_sample])[0]
+        _x_index = torch.sort(torch.randperm(self._seq_len)[: self._n_sample])[0]
         x = x[_x_index]
         x = x[None, :, None].repeat(self._total_size, 1, self._x_dim)
         y = self._gp.sample(x, y_dim=self._y_dim)
