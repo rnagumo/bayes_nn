@@ -23,10 +23,13 @@ class BayesMLP(BaseModel):
         self._fc = nn.Sequential(
             nn.Dropout(dropout),
             nn.Linear(x_dim, 50),
+            nn.ReLU(),
             nn.Dropout(dropout),
             nn.Linear(50, 100),
+            nn.ReLU(),
             nn.Dropout(dropout),
             nn.Linear(100, 50),
+            nn.ReLU(),
             nn.Dropout(dropout),
             nn.Linear(50, y_dim),
         )
