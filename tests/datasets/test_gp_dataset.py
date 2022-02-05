@@ -1,4 +1,4 @@
-from bayes_nn.gp_dataset import GPDataset
+from bayes_nn.datasets.gp_dataset import GPDataset
 
 TOTAL_SIZE = 100
 NUM_CONTEXT_MIN = 3

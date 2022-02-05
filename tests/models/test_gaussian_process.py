@@ -1,7 +1,7 @@
 import pytest
 import torch
 
-from bayes_nn.gaussian_process import GaussianProcess
+from bayes_nn.models.gaussian_process import GaussianProcess
 
 BATCH_SIZE = 5
 NUM_POINTS_0 = 10

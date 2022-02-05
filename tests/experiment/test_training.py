@@ -5,8 +5,8 @@ from copy import deepcopy
 import torch
 from torch import Tensor, nn
 
-from bayes_nn.base_model import BaseModel
-from bayes_nn.training import Trainer
+from bayes_nn.experiment.training import Trainer
+from bayes_nn.models.base_model import BaseModel
 
 X_DIM = 4
 Y_DIM = 2

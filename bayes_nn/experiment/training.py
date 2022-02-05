@@ -6,13 +6,13 @@ from dataclasses import asdict, dataclass, field
 from typing import Any, Optional
 
 import torch
-from torch import Tensor, optim
+from torch import optim
 from torch.optim import optimizer
 from torch.utils.data import dataloader
 from torch.utils.data.dataset import Dataset
 from torch.utils.tensorboard import SummaryWriter
 
-from bayes_nn.base_model import BaseModel
+from bayes_nn.models.base_model import BaseModel
 
 
 @dataclass
@@ -174,7 +174,7 @@ class Trainer:
             self._model is not None and self._loader_test is not None and self._writer is not None
         )
 
-        loss_logger: defaultdict[str, Tensor] = defaultdict(Tensor)
+        loss_logger: defaultdict[str, float] = defaultdict(float)
         self._model.eval()
         for data in self._loader_test:
             with torch.no_grad():
@@ -182,11 +182,11 @@ class Trainer:
                 loss_dict = self._model.loss_func(*data)
 
             for key, value in loss_dict.items():
-                loss_logger[key] += value.sum()
+                loss_logger[key] += value.sum().item()
 
-        for key, value in loss_logger.items():
+        for key, value in loss_logger.items():  # type: ignore
             self._writer.add_scalar(
-                f"test/{key}", value.item() / len(self._loader_test), self._global_steps
+                f"test/{key}", value / len(self._loader_test), self._global_steps
             )
 
     def _save_checkpoint(self) -> None:

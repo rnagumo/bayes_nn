@@ -1,8 +1,10 @@
+from typing import Union
+
 import torch
 from torch import Tensor
 from torch.utils.data import Dataset
 
-from bayes_nn.gaussian_process import GaussianProcess
+from bayes_nn.models.gaussian_process import GaussianProcess
 
 
 class GPDataset(Dataset):
@@ -21,10 +23,17 @@ class GPDataset(Dataset):
     """
 
     def __init__(
-        self, train: bool, total_size: int, num_context_min: int = 3,
-        num_context_max: int = 10, num_target_min: int = 2,
-        num_target_max: int = 10, x_dim: int = 1, y_dim: int = 1,
-        l2_scale: float = 0.4, variance: float = 1.0,
+        self,
+        train: bool,
+        total_size: int,
+        num_context_min: int = 3,
+        num_context_max: int = 10,
+        num_target_min: int = 2,
+        num_target_max: int = 10,
+        x_dim: int = 1,
+        y_dim: int = 1,
+        l2_scale: float = 0.4,
+        variance: float = 1.0,
     ) -> None:
         super().__init__()
 
@@ -45,9 +54,13 @@ class GPDataset(Dataset):
 
         self.generate_dataset()
 
-    def generate_dataset(self, x_ub: float = 2.0, x_lb: float = -2.0,
-                         resample_params: bool = False,
-                         single_params: bool = True) -> None:
+    def generate_dataset(
+        self,
+        x_ub: float = 2.0,
+        x_lb: float = -2.0,
+        resample_params: bool = False,
+        single_params: bool = True,
+    ) -> None:
         """Initializes dataset.
 
         **Note**
@@ -68,10 +81,11 @@ class GPDataset(Dataset):
         num_target_max = max(self._num_target_min, self._num_target_max)
 
         # Sample number of data points
-        num_context = torch.randint(self._num_context_min, num_context_max, ()).item()
+        num_context = int(torch.randint(self._num_context_min, num_context_max, ()).item())
         num_target = (
-            torch.randint(self._num_target_min, num_target_max, ()).item()
-            if self._train else max(self._num_target_min, self._num_target_max)
+            int(torch.randint(self._num_target_min, num_target_max, ()).item())
+            if self._train
+            else max(self._num_target_min, self._num_target_max)
         )
 
         # Sample input x for target
@@ -102,11 +116,13 @@ class GPDataset(Dataset):
         self._x_target = x
         self._y_target = y
 
-    def __getitem__(self, index: int) -> tuple[Tensor, Tensor, Tensor, Tensor]:
+    def __getitem__(self, index: Union[int, list[int]]) -> tuple[Tensor, Tensor, Tensor, Tensor]:
 
         return (
-            self._x_context[index], self._y_context[index], self._x_target[index],
-            self._y_target[index]
+            self._x_context[index],
+            self._y_context[index],
+            self._x_target[index],
+            self._y_target[index],
         )
 
     def __len__(self) -> int:
