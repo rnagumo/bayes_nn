@@ -1,0 +1,14 @@
+{
+    "lr": 0.001,
+    "weight_decay": 0.0,
+    "model_params": {
+        "bayes_mlp": {
+            "x_dim": 1,
+            "y_dim": 1,
+            "dropout": 0.05,
+            "prior_var": 1.0,
+            "mc_samples": 500
+        }
+    },
+    "dataset_params": {}
+}
