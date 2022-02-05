@@ -19,17 +19,18 @@ def main() -> None:
 
     gp = bayes_models.GaussianProcess()
     x_grid = torch.arange(0, 4, 0.01)
-    y_grid = gp.sample(x_grid[None, :, None]).squeeze()
+    y_grid = gp.sample(x_grid[None, :, None]).squeeze() + 4.2
     total_size = len(x_grid)
+    y_grid = (y_grid - y_grid.mean()) / y_grid.std()
 
-    index = torch.randperm(int(total_size * 0.7))[: int(total_size * 0.05)]
+    index = torch.randperm(int(total_size * 0.6))[: int(total_size * 0.1)]
     x_trn = x_grid[index]
     y_trn = y_grid[index]
 
     model = bayes_models.BayesMLP(1, 1, dropout=0.2)
     optimizer = optim.Adam(model.parameters())
 
-    n_epochs = 2000
+    n_epochs = 5000
     for epoch in range(1, n_epochs + 1):
         # Training
         model.train()
