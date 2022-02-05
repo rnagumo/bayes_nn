@@ -43,7 +43,7 @@ class BayesMLP(BaseModel):
         return y_mu, y_cov
 
     def sample(self, x: Tensor) -> Tensor:
-        
+
         if x.ndim != 2:
             raise ValueError(f"Input dim should be (batch, dim), but given {x.size()}")
 
