@@ -7,6 +7,66 @@ from torch.utils.data import Dataset
 from bayes_nn.models.gaussian_process import GaussianProcess
 
 
+class GPSingleBatchDataset(Dataset):
+    """Gaussian Process dataset class with single batch.
+
+    Args:
+        train: Boolean for specifying train or test.
+        total_size: Number of total batch.
+        x_dim: Dimension size of input x.
+        y_dim: Dimension size of output y.
+        gp_params: Parameters dict for GP class.
+    """
+
+    def __init__(
+        self,
+        seq_len: int,
+        n_sample: int,
+        total_size: int = 1,
+        x_dim: int = 1,
+        y_dim: int = 1,
+        l2_scale: float = 0.4,
+        variance: float = 1.0,
+    ) -> None:
+        super().__init__()
+
+        self._seq_len = seq_len
+        self._n_sample = n_sample
+        self._total_size = total_size
+        self._x_dim = x_dim
+        self._y_dim = y_dim
+
+        self._gp = GaussianProcess(l2_scale=l2_scale, variance=variance)
+        self._x = torch.tensor([])  # `(total_size, x_dim)`
+        self._y = torch.tensor([])  # `(total_size, y_dim)`
+        self.generate_dataset()
+
+    def generate_dataset(self, x_ub: float = 2.0, x_lb: float = -2.0) -> None:
+        """Initialize dataset.
+
+        Args:
+            x_ub: Upper bound of x range.
+            x_lb: Lower bound of x range.
+        """
+
+        x = torch.arange(x_lb, x_ub, (x_ub - x_lb) / self._seq_len)
+        _x_index = torch.sort(torch.randperm(self._seq_len)[:self._n_sample])[0]
+        x = x[_x_index]
+        x = x[None, :, None].repeat(self._total_size, 1, self._x_dim)
+        y = self._gp.sample(x, y_dim=self._y_dim)
+
+        self._x = x
+        self._y = y
+
+    def __getitem__(self, index: Union[int, list[int]]) -> tuple[Tensor, Tensor]:
+
+        return (self._x[index], self._y[index])
+
+    def __len__(self) -> int:
+
+        return self._total_size
+
+
 class GPDataset(Dataset):
     """Gaussian Process dataset class.
 

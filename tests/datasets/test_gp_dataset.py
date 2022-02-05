@@ -1,5 +1,6 @@
-from bayes_nn.datasets.gp_dataset import GPDataset
+from bayes_nn.datasets.gp_dataset import GPDataset, GPSingleBatchDataset
 
+SEQ_LEN = 43
 TOTAL_SIZE = 100
 NUM_CONTEXT_MIN = 3
 NUM_CONTEXT_MAX = 7
@@ -16,6 +17,20 @@ PARAMS = {
     "x_dim": X_DIM,
     "y_dim": Y_DIM,
 }
+
+
+def test_single_batch_dataset() -> None:
+
+    dataset = GPSingleBatchDataset(SEQ_LEN, SEQ_LEN, x_dim=X_DIM, y_dim=Y_DIM)
+    x, y = dataset[[0]]
+    assert x.size() == (1, SEQ_LEN, X_DIM)
+    assert y.size() == (1, SEQ_LEN, Y_DIM)
+
+    # Sample from sequence
+    dataset = GPSingleBatchDataset(SEQ_LEN, 24, x_dim=X_DIM, y_dim=Y_DIM)
+    x, y = dataset[[0]]
+    assert x.size() == (1, 24, X_DIM)
+    assert y.size() == (1, 24, Y_DIM)
 
 
 def _base_case(train: bool) -> None:
