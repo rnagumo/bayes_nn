@@ -14,6 +14,15 @@ class BaseModel(nn.Module):
 
         raise NotImplementedError
 
+    def sample(self, x: Tensor) -> Tensor:
+        """Sample targets with Monte Carlo sampling.
+
+        Args:
+            Predctions with Monte Carlo sampling in 1st dimension.
+        """
+
+        raise NotImplementedError
+
     def loss_func(self, x: Tensor, y: Tensor) -> dict[str, Tensor]:
         """Loss function.
 
